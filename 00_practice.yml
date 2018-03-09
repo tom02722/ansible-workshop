@@ -1,0 +1,39 @@
+---
+- hosts: web
+  tasks:
+    - name: install httpd
+      yum:
+        name: httpd
+        state: latest
+    - name: start httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: install python-firewall
+      yum:
+        name: python-firewall
+        state: latest
+    - name: install firewalld
+      yum:
+        name: firewalld
+        state: latest
+    - name: start firewalld service
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+    - name: enable firewall policy http
+      firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+    - name: enable firewall policy https
+      firewalld:
+        service: https
+        state: enabled
+        permanent: true
+        immediate: true
+ 
+

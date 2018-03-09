@@ -1,0 +1,38 @@
+---
+- hosts: web
+  vars:
+    package: httpd
+    directories: 
+      - /var/www/html
+      - /etc/httpd 
+      - /var/log/httpd 
+    firewalld_service:
+      - http
+      - https
+
+  tasks:
+    - name: stop httpd service
+      service: 
+        name: "{{ package }}"
+        state: stopped
+    
+    - name: remove httpd
+      yum:
+        name: "{{ package }}"
+        state: removed
+    
+    - name: delete directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ directories }}"
+    
+    - name: disable firewall policy
+      firewalld:
+        service: "{{ item }}"
+        state: disabled
+        permanent: true
+        immediate: true
+      with_items:
+        - "{{ firewalld_service }}"
